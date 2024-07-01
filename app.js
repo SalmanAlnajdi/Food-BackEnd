@@ -9,11 +9,15 @@ const userRouter = require("./api/users/routes");
 const recipeRouter = require("./api/recipes/routes");
 const ingredientRouter = require("./api/ingredinets/routes");
 const categoryRouter = require("./api/categories/routes");
+const cors = require("cors");
+const path = require("path");
 require("dotenv").config();
 
 const app = express();
 
 app.use(morgan("dev"));
+
+app.use(cors());
 
 connectDB();
 
@@ -22,6 +26,7 @@ app.use(express.json());
 app.use(passport.initialize());
 passport.use("local", localStrategy);
 passport.use("jwt", jwtStrategy);
+app.use("/media", express.static(path.join(__dirname, "media")));
 
 app.use("/users", userRouter);
 app.use("/recipe", recipeRouter);

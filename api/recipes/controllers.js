@@ -22,6 +22,10 @@ const getRecipe = async (req, res, next) => {
 };
 
 const createRecipe = async (req, res, next) => {
+  if (req.file) {
+    console.log(req.file);
+    req.body.image = req.file.path.replace("\\", "/");
+  }
   try {
     req.body.userId = req.user;
     const recipe = await Recipe.create(req.body);
@@ -36,6 +40,10 @@ const createRecipe = async (req, res, next) => {
 };
 
 const updateRecipe = async (req, res, next) => {
+  if (req.file) {
+    console.log(req.file);
+    req.body.image = req.file.path.replace("\\", "/");
+  }
   try {
     const recipe = await Recipe.findByIdAndUpdate(req.params.id, req.body);
     res.status(201).json(recipe);

@@ -15,6 +15,11 @@ const RecipeSchema = new mongoose.Schema({
       ref: "Ingredient",
     },
   ],
+
+  image: {
+    type: String,
+    default: "media/recipe.png",
+  },
   description: {
     type: String,
   },

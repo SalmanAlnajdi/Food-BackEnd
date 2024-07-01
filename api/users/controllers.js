@@ -10,7 +10,11 @@ const ganerateToken = (user) => {
 
   return jwt.sign(payload, process.env.JWT_SECRET);
 };
-exports.signup = async (req, res) => {
+exports.signup = async (req, res, next) => {
+  if (req.file) {
+    console.log(req.file);
+    req.body.image = req.file.path.replace("\\", "/");
+  }
   try {
     req.body.password = await bcrypt.hash(req.body.password, 10);
 
@@ -24,16 +28,16 @@ exports.signup = async (req, res) => {
   }
 };
 
-exports.signin = async (req, res) => {
+exports.signin = async (req, res, next) => {
   try {
     const token = await ganerateToken(req.user);
     return res.status(201).json({ token });
   } catch (err) {
-    res.status(500).json("Server Error");
+    next(err);
   }
 };
 
-exports.getUsers = async (req, res) => {
+exports.getUsers = async (req, res, next) => {
   try {
     const users = await User.find().populate("urls");
     res.status(201).json(users);

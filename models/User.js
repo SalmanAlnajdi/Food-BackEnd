@@ -10,6 +10,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  image: {
+    type: String,
+    default: "media/programmer.png",
+  },
 });
 
 module.exports = mongoose.model("User", UserSchema);
