@@ -39,7 +39,7 @@ exports.signin = async (req, res, next) => {
 
 exports.getUsers = async (req, res, next) => {
   try {
-    const users = await User.find().populate("urls");
+    const users = await User.find();
     res.status(201).json(users);
   } catch (err) {
     next(err);
