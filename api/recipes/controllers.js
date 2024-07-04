@@ -27,11 +27,32 @@ const createRecipe = async (req, res, next) => {
     req.body.image = req.file.path.replace("\\", "/");
   }
   try {
-    req.body.userId = req.user;
-    const recipe = await Recipe.create(req.body);
-    await User.findByIdAndUpdate(req.user._id, {
-      $push: { urls: recipe._id },
+    const { title, category, ingredient, description, userId } = req.body;
+    console.log(req.category);
+    const recipe = await Recipe.create({
+      title,
+      category,
+      ingredient,
+      description,
+      userId,
     });
+
+    await Category.updateMany(
+      { _id: { $in: category } },
+      { $push: { recipe: recipe._id } }
+    );
+
+    console.log(category);
+    if (recipe) {
+      await Category.findByIdAndUpdate(category, {
+        $push: { recipes: recipe._id },
+      });
+    }
+
+    // req.body.userId = req.user;
+    // const recipe = await Recipe.create(req.body);
+    // await User.findByIdAndUpdate(req.user._id, {
+    //   $push: { urls: recipe._id },
 
     res.status(201).json("recipe created!");
   } catch (err) {
@@ -61,10 +82,22 @@ const deleteRecipe = async (req, res, next) => {
   }
 };
 
+const getRecipesByCategory = async (req, res, next) => {
+  try {
+    const recipes = await Recipe.find({
+      category: req.params.category,
+    }).populate("Category");
+    res.status(201).json(recipes);
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   getRecipes,
   getRecipe,
   createRecipe,
   updateRecipe,
   deleteRecipe,
+  getRecipesByCategory,
 };

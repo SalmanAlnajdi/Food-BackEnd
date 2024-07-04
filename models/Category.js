@@ -5,10 +5,12 @@ const CategorySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  recipe: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Recipe",
-  },
+  recipe: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Recipe",
+    },
+  ],
 });
 
 module.exports = mongoose.model("Category", CategorySchema);

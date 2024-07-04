@@ -8,6 +8,7 @@ const {
   createRecipe,
   updateRecipe,
   deleteRecipe,
+  getRecipesByCategory,
 } = require("./controllers");
 
 const passport = require("passport");
@@ -31,5 +32,7 @@ recipeRouter.delete(
   passport.authenticate("jwt", { session: false }),
   deleteRecipe
 );
+
+recipeRouter.get("/:category", getRecipesByCategory);
 
 module.exports = recipeRouter;

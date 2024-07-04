@@ -31,7 +31,7 @@ app.use("/media", express.static(path.join(__dirname, "media")));
 app.use("/users", userRouter);
 app.use("/recipe", recipeRouter);
 app.use("/ingredient", ingredientRouter);
-//app.use("/category", categoryRouter);
+app.use("/category", categoryRouter);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
