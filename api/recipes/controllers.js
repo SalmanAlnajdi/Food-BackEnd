@@ -84,12 +84,14 @@ const deleteRecipe = async (req, res, next) => {
 
 const getRecipesByCategory = async (req, res, next) => {
   try {
-    const recipes = await Recipe.find({
-      category: req.params.category,
-    }).populate("Category");
+    const categoryId = req.params.catgeoryid;
+    console.log(categoryId);
+    const recipes = await Recipe.find({ category: categoryId }).populate(
+      "category"
+    );
     res.status(201).json(recipes);
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    next(error);
   }
 };
 

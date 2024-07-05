@@ -33,6 +33,6 @@ recipeRouter.delete(
   deleteRecipe
 );
 
-recipeRouter.get("/:category", getRecipesByCategory);
+recipeRouter.get("/bycategory/:catgeoryid", getRecipesByCategory);
 
 module.exports = recipeRouter;
