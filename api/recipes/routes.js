@@ -9,6 +9,8 @@ const {
   updateRecipe,
   deleteRecipe,
   getRecipesByCategory,
+  getRecipesByUser,
+  getRecipesByIngredient,
 } = require("./controllers");
 
 const passport = require("passport");
@@ -34,5 +36,9 @@ recipeRouter.delete(
 );
 
 recipeRouter.get("/bycategory/:catgeoryid", getRecipesByCategory);
+
+recipeRouter.get("/byuser/:userid", getRecipesByUser);
+
+recipeRouter.get("/byingredient/:ingredientid", getRecipesByIngredient);
 
 module.exports = recipeRouter;

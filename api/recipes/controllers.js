@@ -42,6 +42,11 @@ const createRecipe = async (req, res, next) => {
       { $push: { recipe: recipe._id } }
     );
 
+    await Ingredient.updateMany(
+      { _id: { $in: ingredient } },
+      { $push: { recipe: recipe._id } }
+    );
+
     console.log(category);
     if (recipe) {
       await Category.findByIdAndUpdate(category, {
@@ -95,6 +100,30 @@ const getRecipesByCategory = async (req, res, next) => {
   }
 };
 
+const getRecipesByUser = async (req, res, next) => {
+  try {
+    const userId = req.params.userid;
+    console.log(userId);
+    const recipes = await Recipe.find({ userId: userId }).populate("category");
+    res.status(201).json(recipes);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getRecipesByIngredient = async (req, res, next) => {
+  try {
+    const ingredientId = req.params.ingredientid;
+    console.log(ingredientId);
+    const recipes = await Recipe.find({ ingredient: ingredientId }).populate(
+      "category"
+    );
+    res.status(201).json(recipes);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getRecipes,
   getRecipe,
@@ -102,4 +131,6 @@ module.exports = {
   updateRecipe,
   deleteRecipe,
   getRecipesByCategory,
+  getRecipesByUser,
+  getRecipesByIngredient,
 };
