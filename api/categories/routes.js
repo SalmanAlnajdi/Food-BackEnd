@@ -1,4 +1,5 @@
 const express = require("express");
+const upload = require("../../middlewares/multer");
 
 const categoryRouter = express.Router();
 
@@ -13,10 +14,10 @@ const {
 
 categoryRouter.get("/", getCategories);
 categoryRouter.get("/:id", getCategory);
-categoryRouter.post("/", createCategory);
-categoryRouter.put("/:id", updateCategory);
+categoryRouter.post("/", upload.single("image"), createCategory);
+categoryRouter.put("/:id", upload.single("image"), updateCategory);
 categoryRouter.delete("/:id", deleteCategory);
 
-categoryRouter.get("/:category", getRecipesByCategory);
+categoryRouter.get("/:category/recipes", getRecipesByCategory);
 
 module.exports = categoryRouter;

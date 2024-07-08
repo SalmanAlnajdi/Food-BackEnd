@@ -1,7 +1,5 @@
 const express = require("express");
-const upload = require("../../middlewares/multer");
-const userRouter = express.Router();
-
+const passport = require("passport");
 const {
   signup,
   signin,
@@ -9,7 +7,9 @@ const {
   getMyProfile,
   updateMyProfile,
 } = require("./controllers");
-const passport = require("passport");
+const upload = require("../../middlewares/multer");
+
+const userRouter = express.Router();
 
 userRouter.post("/signup", upload.single("image"), signup);
 userRouter.post(
@@ -17,14 +17,12 @@ userRouter.post(
   passport.authenticate("local", { session: false }),
   signin
 );
-userRouter.get("/", getUsers);
-
+userRouter.get("/", passport.authenticate("jwt", { session: false }), getUsers);
 userRouter.get(
   "/myprofile",
   passport.authenticate("jwt", { session: false }),
   getMyProfile
 );
-
 userRouter.put(
   "/myprofile",
   passport.authenticate("jwt", { session: false }),

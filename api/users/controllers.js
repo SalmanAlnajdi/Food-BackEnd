@@ -2,7 +2,7 @@ const User = require("../../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const ganerateToken = (user) => {
+const generateToken = (user) => {
   const payload = {
     username: user.username,
     _id: user._id,
@@ -10,9 +10,9 @@ const ganerateToken = (user) => {
 
   return jwt.sign(payload, process.env.JWT_SECRET);
 };
+
 exports.signup = async (req, res, next) => {
   if (req.file) {
-    console.log(req.file);
     req.body.image = req.file.path.replace("\\", "/");
   }
   try {
@@ -20,7 +20,7 @@ exports.signup = async (req, res, next) => {
 
     const newUser = await User.create(req.body);
 
-    const token = ganerateToken(newUser);
+    const token = generateToken(newUser);
 
     return res.status(201).json({ token });
   } catch (err) {
@@ -30,7 +30,7 @@ exports.signup = async (req, res, next) => {
 
 exports.signin = async (req, res, next) => {
   try {
-    const token = await ganerateToken(req.user);
+    const token = generateToken(req.user);
     return res.status(201).json({ token });
   } catch (err) {
     next(err);
@@ -40,7 +40,7 @@ exports.signin = async (req, res, next) => {
 exports.getUsers = async (req, res, next) => {
   try {
     const users = await User.find();
-    res.status(201).json(users);
+    res.status(200).json(users);
   } catch (err) {
     next(err);
   }
@@ -60,12 +60,18 @@ exports.getMyProfile = async (req, res, next) => {
 
 exports.updateMyProfile = async (req, res, next) => {
   if (req.file) {
-    console.log(req.file);
     req.body.image = req.file.path.replace("\\", "/");
   }
   try {
-    const user = await User.findByIdAndUpdate(req.user._id, req.body);
-    res.status(201).json(user);
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { $set: req.body },
+      { new: true }
+    ).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json(user);
   } catch (err) {
     next(err);
   }

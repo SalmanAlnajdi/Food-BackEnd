@@ -20,6 +20,10 @@ const getCategory = async (req, res, next) => {
 };
 
 const createCategory = async (req, res, next) => {
+  if (req.file) {
+    console.log(req.file);
+    req.body.image = req.file.path.replace("\\", "/");
+  }
   try {
     const category = await Category.create(req.body);
     res.status(201).json(category);
@@ -30,8 +34,20 @@ const createCategory = async (req, res, next) => {
 
 const updateCategory = async (req, res, next) => {
   try {
-    const category = await Category.findByIdAndUpdate(req.params.id, req.body);
-    res.status(201).json(category);
+    if (req.file) {
+      req.body.image = req.file.path.replace("\\", "/");
+    }
+
+    const category = await Category.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!category) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+
+    res.status(200).json(category);
   } catch (err) {
     next(err);
   }

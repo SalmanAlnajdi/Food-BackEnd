@@ -36,9 +36,7 @@ recipeRouter.delete(
 );
 
 recipeRouter.get("/bycategory/:catgeoryid", getRecipesByCategory);
-
 recipeRouter.get("/byuser/:userid", getRecipesByUser);
-
 recipeRouter.get("/byingredient/:ingredientid", getRecipesByIngredient);
 
 module.exports = recipeRouter;

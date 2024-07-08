@@ -12,12 +12,12 @@ const getRecipes = async (req, res, next) => {
   }
 };
 
-const getRecipe = async (req, res, next) => {
+const getRecipe = async (req, res) => {
   try {
-    const recipe = await Recipe.findById(req.params.id);
-    res.status(201).json(recipe);
-  } catch (err) {
-    next(err);
+    const recipe = await Recipe.findById(req.params.id).populate("ingredient");
+    res.json(recipe);
+  } catch (error) {
+    res.status(500).send("Error fetching recipe");
   }
 };
 
