@@ -22,19 +22,29 @@ const getRecipe = async (req, res) => {
 };
 
 const createRecipe = async (req, res, next) => {
+  console.log("test", req.body);
   if (req.file) {
     console.log(req.file);
     req.body.image = req.file.path.replace("\\", "/");
   }
   try {
-    const { title, category, ingredient, description, userId } = req.body;
-    console.log(req.category);
+    req.body.userId = req.user._id;
+    const { title, category, ingredients, description, userId, image } =
+      req.body;
+    let newIng = [];
+    for await (i of ingredients) {
+      let x = await Ingredient.findById(i);
+      console.log(x);
+      newIng.push(x._id);
+    }
+    console.log("newIng", newIng);
     const recipe = await Recipe.create({
       title,
       category,
-      ingredient,
+      ingredient: newIng,
       description,
       userId,
+      image,
     });
 
     await Category.updateMany(
@@ -43,7 +53,7 @@ const createRecipe = async (req, res, next) => {
     );
 
     await Ingredient.updateMany(
-      { _id: { $in: ingredient } },
+      { _id: { $in: newIng } },
       { $push: { recipe: recipe._id } }
     );
 
